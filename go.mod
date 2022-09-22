@@ -1,4 +1,4 @@
-module render
+module github.com/conbanwa/gin-render
 
 go 1.18
 

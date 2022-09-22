@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-// @version 0.0.1
-// @description last updated at 9/22/2022 4:24:14 PM
+// @version 0.0.2
+// @description last updated at 9/22/2022 4:31:33 PM
 
 //SetMapValue set map value
 func (c *Context) SetMapValue(key string) {
