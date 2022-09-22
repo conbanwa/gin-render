@@ -1,8 +1,4 @@
-package render
-
-import (
-	"github.com/gin-gonic/gin"
-)
+package ginny
 
 const (
 	mapField    = "ctx"
@@ -16,9 +12,6 @@ const (
 
 // Context ext content struct
 type (
-	Context struct {
-		*gin.Context
-	}
 	// HandlerFunc achieves gin.HandlerFunc
 	HandlerFunc func(*Context) string
 	BaseResult  struct {

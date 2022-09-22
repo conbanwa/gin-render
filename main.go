@@ -1,59 +1,56 @@
-package render
+package ginny
 
 import (
-	"time"
+	"github.com/gin-gonic/gin"
 )
 
-// @version 0.0.2
-// @description last updated at 9/22/2022 4:31:33 PM
+// @version 0.0.3
+// @description last updated at 9/22/2022 4:58:48 PM
 
-//SetMapValue set map value
-func (c *Context) SetMapValue(key string) {
-	if c.Keys == nil {
-		c.Keys = make(map[string]interface{})
-	}
-	c.Keys[mapField] = key
+type Context struct {
+	*gin.Context
 }
 
-//SetTimerValue set timer value
-func (c *Context) SetTimerValue() {
-	if c.Keys == nil {
-		c.Keys = make(map[string]interface{})
+func BatchGet(routerGroup *gin.RouterGroup, handlers ...HandlerFunc) {
+	for _, h := range handlers {
+		c := new(Context)
+		c.Context = new(gin.Context)
+		routerGroup.GET(h(nil), h.ToGin())
 	}
-	c.Keys[timerField] = time.Now().UnixNano()
 }
 
-// call c.SetKeyValue before call this function
-func (c *Context) Render(obj interface{}, err error) {
-	field, ok := c.Keys[mapField].(string)
-	if !ok {
-		if _, ok := obj.([]interface{}); ok {
-			field = listField
-		} else {
-			field = resultField
-		}
-	}
-	r := BaseResult{
-		Code: 0,
-	}
-	if err != nil {
-		r.Msg = err.Error()
-		r.Code = 1
-	}
-	if field == noField {
-		r.Data = obj
-	} else {
-		r.Data = map[string]interface{}{field: obj}
-	}
-	var timer int64
-	if start, ok := c.Keys[timerField].(int64); ok {
-		timer = time.Now().UnixNano() - start
-		r.TimeCost = timer
-	}
-	c.JSON(200, r)
+func NewContext(c *gin.Context) *Context {
+	context := new(Context)
+	context.Context = c
+	context.SetTimerValue()
+	return context
 }
 
-func (c *Context) JsonDirect(rows interface{}, err error) {
-	c.SetMapValue(noField)
-	c.Render(rows, err)
+// Handler ext gin.content
+func Handler(h func(*Context)) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		h(NewContext(c))
+	}
+}
+
+// var store = persistence.NewInMemoryStore(60 * time.Second)
+
+func (h HandlerFunc) ToGin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		h(NewContext(c))
+	}
+}
+
+// Cors 直接放行所有跨域请求
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		origin := c.Request.Header.Get("Origin")
+		c.Header("Access-Control-Allow-Origin", origin)
+		c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id")
+		c.Header("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT")
+		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, New-Token, New-Expires-At")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		// 处理请求
+		c.Next()
+	}
 }

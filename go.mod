@@ -1,4 +1,4 @@
-module github.com/conbanwa/gin-render
+module github.com/conbanwa/ginny
 
 go 1.18
 
