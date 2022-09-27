@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @version 0.1.1
+// @version 0.1.2
 // @description last updated at 9/22/2022 4:58:48 PM
 func NewRoute(method, pattern string, handler func(*Context)) Route {
 	return Route{

@@ -10,7 +10,7 @@ func Generic[T interface{}](obj T, errs ...error) gin.HandlerFunc {
 	}
 }
 
-func GenericQuery[T interface{}](f func(...string) (T, error), queries ...string) gin.HandlerFunc {
+func GenericErr[T interface{}](f func(...string) (T, error), queries ...string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		c := NewContext(ctx)
 		var str []string
