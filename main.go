@@ -4,18 +4,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @version 0.0.3
+// @version 0.0.4
 // @description last updated at 9/22/2022 4:58:48 PM
 
 type Context struct {
 	*gin.Context
 }
 
-func BatchGet(routerGroup *gin.RouterGroup, handlers ...HandlerFunc) {
+func BatchGet(routerGroup *gin.RouterGroup, auth gin.HandlerFunc, handlers ...HandlerFunc) {
+	if auth == nil {
+		auth = func(c *gin.Context) {
+			c.Next()
+		}
+	}
 	for _, h := range handlers {
 		c := new(Context)
 		c.Context = new(gin.Context)
-		routerGroup.GET(h(nil), h.ToGin())
+		routerGroup.GET(h(nil), auth, h.ToGin())
 	}
 }
 
