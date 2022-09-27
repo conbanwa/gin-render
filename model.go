@@ -3,13 +3,13 @@ package ginny
 import "github.com/gin-gonic/gin"
 
 const (
-	mapField    = "ctx"
-	noField     = "result"
-	resultField = "result"
-	listField   = "list"
-	methodField = "method"
-	pathField   = "path"
-	timerField  = "timer"
+	mapField     = "ctx"
+	noField      = "result"
+	resultField  = "result"
+	listField    = "list"
+	methodField  = "method"
+	patternField = "pattern"
+	timerField   = "timer"
 )
 
 type (
@@ -30,8 +30,6 @@ type (
 
 	// Route is the information for every URI.
 	Route struct {
-		// Name is the name of this Route.
-		Name string
 		// Method is the string for the HTTP method. ex) GET, POST etc..
 		Method string
 		// Pattern is the pattern of the URI.

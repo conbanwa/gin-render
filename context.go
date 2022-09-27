@@ -7,18 +7,12 @@ import (
 
 //SetMapValue set map value
 func (c *Context) SetMapValue(key string) {
-	if c.Keys == nil {
-		c.Keys = make(map[string]interface{})
-	}
-	c.Keys[mapField] = key
+	c.Set(mapField, key)
 }
 
 //SetTimerValue set timer value
 func (c *Context) SetTimerValue() {
-	if c.Keys == nil {
-		c.Keys = make(map[string]interface{})
-	}
-	c.Keys[timerField] = time.Now().UnixNano()
+	c.Set(timerField, time.Now().UnixNano())
 }
 
 // call c.SetKeyValue before call this function
@@ -83,6 +77,5 @@ func RejectAuth() (int, BaseResult) {
 	return 403, BaseResult{
 		Msg:  "forbidden",
 		Code: 1,
-		// ErrMsg: ErrForbidden,
 	}
 }

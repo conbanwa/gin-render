@@ -4,8 +4,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @version 0.0.5
+// @version 0.1.0
 // @description last updated at 9/22/2022 4:58:48 PM
+func NewRoute(method, pattern string, handler func(*Context)) Route {
+	return Route{
+		Method:      method,
+		Pattern:     pattern,
+		HandlerFunc: ToGinHandler(handler),
+	}
+}
 
 func NewContext(c *gin.Context) *Context {
 	context := new(Context)
@@ -14,8 +21,8 @@ func NewContext(c *gin.Context) *Context {
 	return context
 }
 
-// Handler ext gin.content
-func Handler(h func(*Context)) gin.HandlerFunc {
+// ToGinHandler ext gin.content
+func ToGinHandler(h func(*Context)) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		h(NewContext(c))
 	}
