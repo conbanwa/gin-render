@@ -2,15 +2,15 @@ package ginny
 
 import "github.com/gin-gonic/gin"
 
-func Generic[T interface{}](obj T, errs ...error) gin.HandlerFunc {
+func GenericPtr[T interface{}](t *T, errs ...error) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		c := NewContext(ctx)
 		errs = append(errs, nil)
-		c.Render(obj, errs[0])
+		c.Render(*t, errs[0])
 	}
 }
 
-func GenericErr[T interface{}](f func(...string) (T, error), queries ...string) gin.HandlerFunc {
+func Generic[T interface{}](f func(...string) (T, error), queries ...string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		c := NewContext(ctx)
 		var str []string

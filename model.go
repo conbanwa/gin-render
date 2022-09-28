@@ -27,7 +27,6 @@ type (
 		// Key    string            `json:"key,omitempty"`
 		// Detail map[string]string `json:"detail,omitempty"`
 	}
-
 	// Route is the information for every URI.
 	Route struct {
 		// Method is the string for the HTTP method. ex) GET, POST etc..
@@ -36,5 +35,14 @@ type (
 		Pattern string
 		// HandlerFunc is the handler function of this route.
 		HandlerFunc gin.HandlerFunc
+	}
+	// MiddlewareRoute is the information for every URI.
+	MiddlewareRoute struct {
+		// Method is the string for the HTTP method. ex) GET, POST etc..
+		Method string
+		// Pattern is the pattern of the URI.
+		Pattern string
+		// HandlerFunc is the handler function of this route.
+		HandlerFunc []gin.HandlerFunc
 	}
 )

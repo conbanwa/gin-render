@@ -4,13 +4,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @version 0.1.2
+// @version 0.1.3
 // @description last updated at 9/22/2022 4:58:48 PM
 func NewRoute(method, pattern string, handler func(*Context)) Route {
 	return Route{
 		Method:      method,
 		Pattern:     pattern,
 		HandlerFunc: ToGinHandler(handler),
+	}
+}
+
+func NewMiddlewareRoute(method, pattern string, handler ...func(*Context)) MiddlewareRoute {
+	return MiddlewareRoute{
+		Method:      method,
+		Pattern:     pattern,
+		HandlerFunc: ToGinHandlers(handler...),
 	}
 }
 
@@ -26,6 +34,12 @@ func ToGinHandler(h func(*Context)) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		h(NewContext(c))
 	}
+}
+func ToGinHandlers(h ...func(*Context)) (handlers []gin.HandlerFunc) {
+	for _, handler := range h {
+		handlers = append(handlers, ToGinHandler(handler))
+	}
+	return handlers
 }
 
 // Cors 直接放行所有跨域请求
