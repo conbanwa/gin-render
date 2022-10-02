@@ -4,9 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @version 0.1.3
+// NewRoute 创建路由
+// @version 0.1.4
 // @description last updated at 9/22/2022 4:58:48 PM
 func NewRoute(method, pattern string, handler func(*Context)) Route {
+	if method == "" {
+		method = "GET"
+	}
 	return Route{
 		Method:      method,
 		Pattern:     pattern,
@@ -15,10 +19,35 @@ func NewRoute(method, pattern string, handler func(*Context)) Route {
 }
 
 func NewMiddlewareRoute(method, pattern string, handler ...func(*Context)) MiddlewareRoute {
+	if method == "" {
+		method = "GET"
+	}
 	return MiddlewareRoute{
 		Method:      method,
 		Pattern:     pattern,
 		HandlerFunc: ToGinHandlers(handler...),
+	}
+}
+
+func NewGinRoute(method, pattern string, handler gin.HandlerFunc) Route {
+	if method == "" {
+		method = "GET"
+	}
+	return Route{
+		Method:      method,
+		Pattern:     pattern,
+		HandlerFunc: handler,
+	}
+}
+
+func NewGinMiddlewareRoute(method, pattern string, handler ...gin.HandlerFunc) MiddlewareRoute {
+	if method == "" {
+		method = "GET"
+	}
+	return MiddlewareRoute{
+		Method:      method,
+		Pattern:     pattern,
+		HandlerFunc: handler,
 	}
 }
 
@@ -40,18 +69,4 @@ func ToGinHandlers(h ...func(*Context)) (handlers []gin.HandlerFunc) {
 		handlers = append(handlers, ToGinHandler(handler))
 	}
 	return handlers
-}
-
-// Cors 直接放行所有跨域请求
-func Cors() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		origin := c.Request.Header.Get("Origin")
-		c.Header("Access-Control-Allow-Origin", origin)
-		c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id")
-		c.Header("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT")
-		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, New-Token, New-Expires-At")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		// 处理请求
-		c.Next()
-	}
 }
