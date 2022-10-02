@@ -15,7 +15,7 @@ func (c *Context) SetTimerValue() {
 	c.Set(timerField, time.Now().UnixNano())
 }
 
-// call c.SetKeyValue before call this function
+// Render call c.SetKeyValue before call this function
 func (c *Context) Render(obj interface{}, err error) {
 	field, ok := c.Keys[mapField].(string)
 	if !ok {
